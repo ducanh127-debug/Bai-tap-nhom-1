@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🐺 Ma Sói Online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #060810;
+  --bg-mid: #0c1020;
+  --bg-card: #111827;
+  --bg-raised: #1a2236;
+  --gold: #c9922a;
+  --gold-light: #e8b84b;
+  --gold-dim: #8a6518;
+  --blood: #8b1c1c;
+  --blood-bright: #cc2222;
+  --moon: #d4c5a9;
+  --moon-dim: #8a7d68;
+  --wolf-silver: #9ab0c8;
+  --text-main: #e2d9c5;
+  --text-dim: #8a7d6a;
+  --text-faint: #3d3428;
+  --border: rgba(201,146,42,0.25);
+  --border-bright: rgba(201,146,42,0.6);
+  --glow-gold: 0 0 20px rgba(201,146,42,0.4);
+  --glow-blood: 0 0 20px rgba(139,28,28,0.6);
+  --glow-moon: 0 0 30px rgba(212,197,169,0.2);
+  --shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg-deep);
+  color: var(--text-main);
+  font-family: 'Crimson Text', serif;
+  overflow: hidden;
+}
+
+/* Starfield */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: 
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 60%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 70%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(2px 2px at 35% 15%, rgba(255,255,240,0.5) 0%, transparent 100%),
+    radial-gradient(2px 2px at 65% 45%, rgba(255,255,240,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 55%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 90%, rgba(255,255,255,0.2) 0%, transparent 100%);
+  pointer-events: none; z-index: 0;
+}
+
+/* SCREENS */
+.screen { 
+  position: fixed; inset: 0;
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 10; padding: 16px;
+  overflow-y: auto;
+}
+.screen.active { display: flex; }
+
+/* ─── WELCOME SCREEN ─── */
+#screen-welcome {
+  background: radial-gradient(ellipse at 50% 30%, rgba(139,28,28,0.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 50% 100%, rgba(201,146,42,0.08) 0%, transparent 50%),
+              var(--bg-deep);
+}
+
+.logo-wrap {
+  text-align: center;
+  margin-bottom: 40px;
+  animation: floatIn 1s ease-out;
+}
+
+.moon-icon {
+  font-size: clamp(64px, 12vw, 96px);
+  display: block;
+  filter: drop-shadow(0 0 30px rgba(212,197,169,0.6)) drop-shadow(0 0 60px rgba(212,197,169,0.3));
+  animation: moonPulse 4s ease-in-out infinite;
+}
+
+@keyframes moonPulse {
+  0%, 100% { filter: drop-shadow(0 0 30px rgba(212,197,169,0.6)) drop-shadow(0 0 60px rgba(212,197,169,0.3)); }
+  50% { filter: drop-shadow(0 0 50px rgba(212,197,169,0.9)) drop-shadow(0 0 90px rgba(212,197,169,0.5)); }
+}
+
+.game-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(28px, 7vw, 52px);
+  font-weight: 900;
+  color: var(--gold-light);
+  text-shadow: 0 0 40px rgba(232,184,75,0.6), 0 2px 4px rgba(0,0,0,0.8);
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+}
+
+.game-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(12px, 2.5vw, 16px);
+  color: var(--moon-dim);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+.welcome-card {
+  background: linear-gradient(135deg, rgba(26,34,54,0.95) 0%, rgba(17,24,39,0.98) 100%);
+  border: 1px solid var(--border-bright);
+  border-radius: 16px;
+  padding: clamp(24px, 5vw, 40px);
+  width: 100%; max-width: 440px;
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(201,146,42,0.1), 0 0 60px rgba(0,0,0,0.5);
+  animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes floatIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+.section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.inp {
+  width: 100%;
+  background: rgba(6,8,16,0.8);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--text-main);
+  font-family: 'Crimson Text', serif;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 16px;
+}
+.inp:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,146,42,0.12); }
+.inp::placeholder { color: var(--text-faint); }
+
+.gender-row {
+  display: flex; gap: 10px;
+  margin-bottom: 20px;
+}
+.gender-btn {
+  flex: 1; padding: 10px;
+  background: rgba(6,8,16,0.8);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-dim);
+  font-family: 'Crimson Text', serif;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.gender-btn.active {
+  background: rgba(201,146,42,0.15);
+  border-color: var(--gold);
+  color: var(--gold-light);
+}
+
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0;
+  color: var(--text-faint);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+}
+
+.btn {
+  width: 100%; padding: 14px;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  border: none; border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative; overflow: hidden;
+  margin-bottom: 10px;
+}
+.btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,0);
+  transition: background 0.2s;
+}
+.btn:hover::after { background: rgba(255,255,255,0.06); }
+.btn:active { transform: scale(0.98); }
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold) 0%, #a07020 50%, var(--gold) 100%);
+  color: #1a0e00;
+  box-shadow: 0 4px 20px rgba(201,146,42,0.4);
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold-light); }
+
+.player-count-row {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+.count-btn {
+  flex: 1; padding: 10px 6px;
+  background: rgba(6,8,16,0.8);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  cursor: pointer; transition: all 0.2s;
+}
+.count-btn.active {
+  background: rgba(139,28,28,0.3);
+  border-color: var(--blood-bright);
+  color: #ff6666;
+}
+
+/* ─── LOBBY SCREEN ─── */
+#screen-lobby {
+  background: radial-gradient(ellipse at 20% 20%, rgba(139,28,28,0.1) 0%, transparent 50%),
+              var(--bg-deep);
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+}
+
+.lobby-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  grid-template-rows: auto 1fr;
+  height: 100vh; width: 100%;
+  gap: 0;
+}
+
+.lobby-header {
+  grid-column: 1/-1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(12,16,32,0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+}
+
+.room-info {
+  display: flex; align-items: center; gap: 16px;
+}
+.room-id-badge {
+  background: rgba(201,146,42,0.15);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.room-id-badge:hover { box-shadow: var(--glow-gold); }
+
+.header-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(14px, 3vw, 22px);
+  color: var(--gold-light);
+}
+
+/* Players grid */
+.lobby-main {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.player-slot {
+  background: rgba(17,24,39,0.7);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+  min-height: 100px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.player-slot.filled { border-color: rgba(201,146,42,0.4); }
+.player-slot.empty {
+  border-style: dashed;
+  opacity: 0.4;
+}
+.player-slot.me { border-color: var(--gold); box-shadow: 0 0 20px rgba(201,146,42,0.2); }
+
+.player-avatar {
+  font-size: 32px; margin-bottom: 8px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+.player-slot-name {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--text-main);
+  font-weight: 600;
+}
+.host-crown {
+  position: absolute; top: 6px; right: 8px;
+  font-size: 14px;
+}
+
+/* Sidebar chat */
+.lobby-sidebar {
+  background: rgba(6,8,16,0.95);
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column;
+}
+
+.chat-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--gold-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.chat-messages {
+  flex: 1; overflow-y: auto;
+  padding: 12px;
+  display: flex; flex-direction: column; gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.chat-msg {
+  background: rgba(26,34,54,0.6);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+  animation: msgIn 0.2s ease-out;
+}
+@keyframes msgIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+.chat-msg.wolf { border-left-color: var(--blood-bright); background: rgba(139,28,28,0.2); }
+.chat-msg.system { border-left-color: var(--gold-dim); color: var(--gold-dim); font-style: italic; }
+.chat-msg.dead { opacity: 0.5; font-style: italic; }
+
+.chat-sender {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 3px;
+}
+.chat-msg.dead .chat-sender { color: var(--text-faint); }
+
+.chat-input-row {
+  display: flex; gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+.chat-inp {
+  flex: 1;
+  background: rgba(6,8,16,0.8);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text-main);
+  font-family: 'Crimson Text', serif;
+  font-size: 14px;
+  outline: none;
+}
+.chat-inp:focus { border-color: var(--gold); }
+.chat-send-btn {
+  background: rgba(201,146,42,0.2);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--gold);
+  cursor: pointer; font-size: 16px;
+  transition: all 0.2s;
+}
+.chat-send-btn:hover { background: rgba(201,146,42,0.35); }
+
+/* Start btn in lobby */
+.start-game-wrap {
+  padding: 16px 0;
+  text-align: center;
+}
+
+/* ─── GAME SCREEN ─── */
+#screen-game {
+  background: var(--bg-deep);
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  grid-template-rows: 56px 1fr auto;
+  height: 100vh; width: 100%;
+}
+
+.game-header {
+  grid-column: 1/-1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  background: rgba(6,8,16,0.97);
+  border-bottom: 1px solid var(--border);
+  z-index: 20;
+}
+
+.phase-indicator {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+}
+.phase-icon { font-size: 20px; }
+.phase-text { color: var(--text-main); font-weight: 600; }
+.round-badge {
+  background: rgba(201,146,42,0.1);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: var(--gold-dim);
+  letter-spacing: 0.1em;
+}
+
+.timer-bar-wrap {
+  position: fixed; top: 56px; left: 0; right: 0;
+  height: 3px; z-index: 30;
+  background: rgba(255,255,255,0.05);
+}
+.timer-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--blood-bright) 100%);
+  transition: width 1s linear;
+}
+
+.game-main {
+  overflow-y: auto;
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 16px;
+  position: relative;
+}
+
+/* Night overlay */
+.night-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 100; pointer-events: none;
+  opacity: 0; transition: opacity 1s;
+  display: flex; align-items: center; justify-content: center;
+}
+.night-overlay.active { opacity: 1; pointer-events: all; }
+.night-content {
+  text-align: center; padding: 40px;
+  max-width: 500px; width: 100%;
+}
+.night-moon {
+  font-size: 80px;
+  display: block;
+  filter: drop-shadow(0 0 40px rgba(212,197,169,0.8));
+  animation: nightMoon 2s ease-in-out infinite alternate;
+}
+@keyframes nightMoon { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+/* Action panel */
+.action-panel {
+  background: linear-gradient(135deg, rgba(26,34,54,0.97) 0%, rgba(17,24,39,0.99) 100%);
+  border: 1px solid var(--border-bright);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow), var(--glow-gold);
+  animation: slideUp 0.4s ease-out;
+}
+.action-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 16px;
+  color: var(--gold-light);
+  margin-bottom: 16px;
+  text-align: center;
+}
+.action-targets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.target-btn {
+  background: rgba(6,8,16,0.8);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--text-main);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.target-btn:hover { border-color: var(--gold); background: rgba(201,146,42,0.1); transform: translateY(-2px); }
+.target-btn.selected { border-color: var(--blood-bright); background: rgba(139,28,28,0.3); color: #ff8888; }
+.target-btn.confirm-selected { border-color: var(--gold); background: rgba(201,146,42,0.2); }
+.target-emoji { font-size: 24px; }
+
+.action-confirm-btn {
+  width: 100%; padding: 12px;
+  background: linear-gradient(135deg, var(--blood) 0%, #5a0f0f 100%);
+  border: 1px solid var(--blood-bright);
+  border-radius: 10px;
+  color: #ffcccc;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.action-confirm-btn:hover { background: linear-gradient(135deg, var(--blood-bright) 0%, var(--blood) 100%); }
+.witch-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.witch-opt-btn {
+  padding: 12px; border-radius: 10px; cursor: pointer;
+  font-family: 'Cinzel', serif; font-size: 13px;
+  border: 1px solid; transition: all 0.2s; font-weight: 600;
+}
+.witch-save { background: rgba(26,100,40,0.3); border-color: #3a8a4a; color: #88ddaa; }
+.witch-save:hover { background: rgba(26,100,40,0.5); }
+.witch-kill { background: rgba(139,28,28,0.3); border-color: var(--blood-bright); color: #ff8888; }
+.witch-kill:hover { background: rgba(139,28,28,0.5); }
+.witch-skip { background: rgba(30,30,50,0.5); border-color: var(--border); color: var(--text-dim); }
+
+/* Players in game */
+.players-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+}
+.pcard {
+  background: rgba(17,24,39,0.85);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+  cursor: default;
+}
+.pcard.alive { border-color: rgba(201,146,42,0.3); }
+.pcard.dead {
+  border-color: rgba(80,80,80,0.3);
+  opacity: 0.45;
+  filter: grayscale(0.8);
+}
+.pcard.me { border-color: var(--gold); box-shadow: 0 0 15px rgba(201,146,42,0.25); }
+.pcard.wolf-ally { border-color: rgba(204,34,34,0.5); }
+.pcard-avatar { font-size: 28px; margin-bottom: 6px; }
+.pcard-name {
+  font-family: 'Cinzel', serif;
+  font-size: 11px; font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pcard-role {
+  font-size: 10px; margin-top: 4px;
+  color: var(--text-dim);
+}
+.pcard .death-mark {
+  position: absolute; top: 4px; right: 6px;
+  font-size: 14px;
+}
+.vote-count {
+  position: absolute; top: -8px; right: -8px;
+  background: var(--blood-bright);
+  color: white;
+  border-radius: 50%;
+  width: 20px; height: 20px;
+  font-size: 11px; font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+}
+.pcard.selectable { cursor: pointer; }
+.pcard.selectable:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 4px 15px rgba(201,146,42,0.2); }
+.pcard.selected-target { border-color: var(--blood-bright); background: rgba(139,28,28,0.2); }
+
+/* Game sidebar */
+.game-sidebar {
+  background: rgba(6,8,16,0.97);
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+.my-role-card {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+.role-icon { font-size: 36px; margin-bottom: 6px; }
+.role-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.role-desc { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+
+/* Game info panel */
+.game-controls-bottom {
+  grid-column: 1/-1;
+  padding: 12px 20px;
+  background: rgba(6,8,16,0.97);
+  border-top: 1px solid var(--border);
+  display: flex; gap: 12px; align-items: center;
+}
+
+/* Result screen overlay */
+.result-screen {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 200;
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.result-screen.show { display: flex; }
+.result-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(28px, 8vw, 52px);
+  margin-bottom: 8px;
+  animation: resultPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes resultPop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.result-title.wolf-win { color: var(--blood-bright); text-shadow: var(--glow-blood); }
+.result-title.village-win { color: var(--gold-light); text-shadow: var(--glow-gold); }
+.result-players { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; max-width: 600px; }
+.result-player {
+  background: rgba(26,34,54,0.9);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px; text-align: center; min-width: 100px;
+}
+.result-player.winner { border-color: var(--gold); }
+
+/* Toast notification */
+.toast-container {
+  position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+  z-index: 1000;
+  display: flex; flex-direction: column; gap: 8px; align-items: center;
+  pointer-events: none;
+}
+.toast {
+  background: rgba(26,34,54,0.97);
+  border: 1px solid var(--border-bright);
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--text-main);
+  box-shadow: var(--shadow);
+  animation: toastIn 0.3s ease-out;
+  max-width: 320px; text-align: center;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.toast.blood { border-color: var(--blood-bright); color: #ff9999; }
+.toast.gold { border-color: var(--gold); color: var(--gold-light); }
+.toast.system { border-color: var(--moon-dim); color: var(--moon); }
+
+/* Announcement */
+.announcement {
+  text-align: center; padding: 20px;
+  background: linear-gradient(135deg, rgba(17,24,39,0.9) 0%, rgba(26,34,54,0.9) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.announce-icon { font-size: 40px; margin-bottom: 10px; }
+.announce-text {
+  font-family: 'Cinzel', serif;
+  font-size: 15px; color: var(--text-main);
+  line-height: 1.6;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .lobby-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  .lobby-sidebar {
+    border-left: none; border-top: 1px solid var(--border);
+    max-height: 240px;
+  }
+  .game-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 50px 1fr auto 200px;
+  }
+  .game-sidebar { max-height: 200px; }
+  .players-board { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+  .pcard { padding: 10px 6px; border-radius: 10px; }
+  .pcard-avatar { font-size: 24px; }
+  .pcard-name { font-size: 10px; }
+
+  /* Action panel mobile — nổi lên như bottom sheet */
+  .action-panel {
+    position: fixed !important;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 20px 16px 32px !important;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.8);
+  }
+  /* Handle bar trên top bottom sheet */
+  .action-panel::before {
+    content: '';
+    display: block;
+    width: 40px; height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+
+  .action-targets {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .target-btn {
+    padding: 14px 8px !important;
+    font-size: 13px !important;
+    min-height: 72px;
+    /* Touch friendly */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .target-emoji { font-size: 28px !important; }
+
+  .action-confirm-btn {
+    padding: 16px !important;
+    font-size: 15px !important;
+    min-height: 52px;
+    touch-action: manipulation;
+  }
+  .witch-opt-btn {
+    padding: 16px !important;
+    font-size: 14px !important;
+    min-height: 52px;
+    touch-action: manipulation;
+  }
+
+  /* Vote panel mobile */
+  #vote-panel { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; border-radius: 20px 20px 0 0; max-height: 65vh; overflow-y: auto; padding-bottom: 28px; }
+  #vote-panel::before { content: ''; display: block; width: 40px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin: 12px auto 16px; }
+
+  /* Vote targets — 3 cột trên mobile */
+  #vote-targets { grid-template-columns: repeat(3, 1fr) !important; }
+  .vtgt-btn { padding: 10px 6px !important; font-size: 11px !important; min-height: 70px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+  /* Input chat mobile */
+  .chat-input-row input { font-size: 16px !important; } /* ngăn iOS zoom */
+
+  /* Game header nhỏ hơn */
+  .game-header { padding: 0 12px !important; }
+  .phase-text { font-size: 13px !important; }
+  .round-badge { font-size: 10px !important; padding: 2px 8px !important; }
+  .timer-text { font-size: 12px !important; }
+
+  /* Welcome screen mobile */
+  .welcome-form { padding: 20px 16px !important; }
+  .welcome-input { font-size: 16px !important; } /* ngăn iOS zoom */
+  .welcome-btn { font-size: 15px !important; padding: 14px !important; min-height: 50px; touch-action: manipulation; }
+
+  /* Lobby mobile */
+  .lobby-header { padding: 12px 16px !important; }
+  .start-btn { min-height: 50px; touch-action: manipulation; font-size: 15px !important; }
+
+  /* Bottom hint nhỏ hơn */
+  .bottom-hint-bar { font-size: 12px !important; padding: 8px 12px !important; }
+}
+
+/* Touch device — tắt hover effect, dùng active thay thế */
+@media (hover: none) and (pointer: coarse) {
+  .target-btn:hover { transform: none; }
+  .target-btn:active { border-color: var(--gold); background: rgba(201,146,42,0.15); transform: scale(0.97); }
+  .action-confirm-btn:active { opacity: 0.8; transform: scale(0.98); }
+  .witch-opt-btn:active { opacity: 0.8; }
+  .btn:hover { transform: none; }
+  .btn:active { transform: scale(0.97); opacity: 0.85; }
+}
+
+/* Connection status */
+.conn-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  display: inline-block; margin-right: 6px;
+}
+.conn-dot.green { background: #4caf50; box-shadow: 0 0 6px #4caf50; }
+.conn-dot.red { background: var(--blood-bright); animation: blink 1s infinite; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+/* Night role descriptions */
+.night-role-label {
+  display: inline-block;
+  background: rgba(139,28,28,0.3);
+  border: 1px solid rgba(204,34,34,0.4);
+  border-radius: 6px; padding: 3px 10px;
+  font-family: 'Cinzel', serif; font-size: 11px;
+  color: #ff9999; letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+</style>
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ══════════════ WELCOME SCREEN ══════════════ -->
+<div class="screen active" id="screen-welcome">
+  <div class="logo-wrap">
+    <span class="moon-icon">🌕</span>
+    <div class="game-title">MA SÓI</div>
+    <div class="game-subtitle">Trò Chơi Sói Và Người</div>
+  </div>
+
+  <div class="welcome-card">
+    <div class="section-label">Tên của bạn</div>
+    <input class="inp" id="inp-name" type="text" placeholder="Nhập tên hiển thị..." maxlength="20" autocomplete="off" oninput="checkNameRealtime(this.value)">
+    <div id="name-dup-warn" style="display:none;margin:-10px 0 14px;padding:10px 14px;background:rgba(139,28,28,0.35);border:1px solid var(--blood-bright);border-radius:8px;font-size:13px;color:#ffaaaa;line-height:1.5;">⚠️ <strong id="name-dup-text"></strong></div>
+    
+    <div class="section-label">Giới tính</div>
+    <div class="gender-row">
+      <button class="gender-btn active" id="btn-male" onclick="selectGender('male')">👨 Nam</button>
+      <button class="gender-btn" id="btn-female" onclick="selectGender('female')">👩 Nữ</button>
+    </div>
+
+    <div class="divider">TẠO PHÒNG MỚI</div>
+    
+    <div class="section-label">Số người chơi</div>
+    <div class="player-count-row">
+      <button class="count-btn" onclick="selectCount(6)">6 người</button>
+      <button class="count-btn active" onclick="selectCount(7)">7 người</button>
+      <button class="count-btn" onclick="selectCount(8)">8 người</button>
+    </div>
+
+    <button class="btn btn-gold" onclick="createRoom()">🏠 Tạo Phòng</button>
+
+    <div class="divider">HOẶC VÀO PHÒNG</div>
+
+    <div class="section-label">Mã phòng</div>
+    <input class="inp" id="inp-roomid" type="text" placeholder="Nhập mã phòng (VD: ABC12)..." maxlength="6" style="text-transform:uppercase; letter-spacing:0.2em; margin-bottom:10px">
+    <button class="btn btn-ghost" onclick="joinRoom()">🚪 Tham Gia Phòng</button>
+  </div>
+</div>
+
+<!-- ══════════════ LOBBY SCREEN ══════════════ -->
+<div class="screen" id="screen-lobby">
+  <div class="lobby-layout">
+    <div class="lobby-header">
+      <div class="room-info">
+        <div class="header-title">🐺 Sảnh Chờ</div>
+        <div class="room-id-badge" id="lby-room-id" onclick="copyRoomId()" title="Click để copy">—</div>
+        <span style="font-size:11px;color:var(--text-dim)">Click để copy</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span><span class="conn-dot green" id="conn-dot"></span></span>
+        <div id="lby-count" style="font-family:'Cinzel',serif;font-size:13px;color:var(--text-dim)">0/8</div>
+      </div>
+    </div>
+
+    <div class="lobby-main">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.2em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:14px">Người chơi trong phòng</div>
+        <div class="players-grid" id="lby-players"></div>
+      </div>
+      <div class="start-game-wrap" id="start-btn-wrap" style="display:none">
+        <button class="btn btn-gold" style="max-width:280px" onclick="startGame()">⚔️ Bắt Đầu Trò Chơi</button>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:8px">Chỉ host mới có thể bắt đầu</div>
+      </div>
+      <div id="waiting-msg" style="text-align:center;color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;padding:20px">
+        ⏳ Đang chờ đủ người...
+      </div>
+    </div>
+
+    <div class="lobby-sidebar">
+      <div class="chat-header">💬 Trò Chuyện Sảnh</div>
+      <div class="chat-messages" id="lby-chat"></div>
+      <div class="chat-input-row">
+        <input class="chat-inp" id="lby-chat-inp" placeholder="Nhập tin nhắn..." onkeydown="if(event.key==='Enter')sendLobbyChat()">
+        <button class="chat-send-btn" onclick="sendLobbyChat()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ GAME SCREEN ══════════════ -->
+<div class="screen" id="screen-game">
+  <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar" style="width:100%"></div></div>
+
+  <div class="game-layout">
+    <div class="game-header">
+      <div class="phase-indicator">
+        <span class="phase-icon" id="phase-icon">🌙</span>
+        <span class="phase-text" id="phase-text">Đêm</span>
+        <span class="round-badge" id="round-badge">Đêm 1</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span id="timer-display" style="font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--gold)"></span>
+      </div>
+    </div>
+
+    <div class="game-main" id="game-main">
+      <!-- Dynamic content -->
+    </div>
+
+    <div class="game-sidebar">
+      <div class="my-role-card" id="my-role-card">
+        <div class="role-icon">❓</div>
+        <div class="role-name" style="color:var(--gold)">Chưa biết vai</div>
+      </div>
+      <div class="chat-header">💬 Trò Chuyện</div>
+      <div class="chat-messages" id="game-chat"></div>
+      <div class="chat-input-row">
+        <input class="chat-inp" id="game-chat-inp" placeholder="Nhập tin nhắn..." onkeydown="if(event.key==='Enter')sendGameChat()">
+        <button class="chat-send-btn" onclick="sendGameChat()">➤</button>
+      </div>
+    </div>
+
+    <div class="game-controls-bottom" id="game-controls-bottom">
+      <div style="font-size:12px;color:var(--text-dim);font-family:'Cinzel',serif;" id="bottom-hint">
+        Đang chờ trò chơi bắt đầu...
+      </div>
+    </div>
+  </div>
+
+  <!-- Night overlay -->
+  <div class="night-overlay" id="night-overlay">
+    <div class="night-content" id="night-content">
+      <span class="night-moon">🌙</span>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:24px;color:var(--moon);margin:16px 0">Màn Đêm Buông Xuống</div>
+      <div style="color:var(--text-dim);font-size:15px">Làng đã chìm vào giấc ngủ...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ RESULT OVERLAY ══════════════ -->
+<div class="result-screen" id="result-screen">
+  <div id="result-emoji" style="font-size:80px;margin-bottom:16px;animation:resultPop 0.8s ease-out"></div>
+  <div class="result-title" id="result-title">Ma Sói Thắng!</div>
+  <div style="color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;margin-bottom:20px" id="result-info"></div>
+  <div class="result-players" id="result-players"></div>
+  <button class="btn btn-gold" style="max-width:200px;margin-top:10px" onclick="backToWelcome()">🏠 Về Trang Chủ</button>
+</div>
+
+<script>
+// ─── CONFIG ─────────────────────────────────────────────────────────────────
+// Tự động dùng cùng host/port với server — hoạt động cả PC lẫn điện thoại
+// Chỉ cần trỏ điện thoại vào http://[IP_SERVER]:8888 là kết nối được ngay
+const _proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const SERVER_URL = (window.location.protocol === 'file:')
+  ? 'ws://localhost:8888'
+  : `${_proto}//${window.location.host}`;
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let ws = null;
+let myId = null;
+let myRole = null;
+let myName = '';
+let myGender = 'male';
+let currentRoomId = null;
+let isHost = false;
+let selectedCount = 7;
+let gameState = null;
+let currentPhase = null;
+let timerInterval = null;
+let timerEnd = null;
+let selectedAction = null;
+let nightKillInfo = null;
+let witchPotions = { save: true, kill: true };
+let myAlive = true;
+let wolfTeammates = [];
+
+const ROLE_INFO = {
+  werewolf: { name: 'Ma Sói', icon: '🐺', color: '#ff6666', desc: 'Cùng đồng bọn tiêu diệt dân làng mỗi đêm.' },
+  villager: { name: 'Dân Thường', icon: '👤', color: '#e2d9c5', desc: 'Dùng trí tuệ để tìm và loại bỏ Ma Sói.' },
+  seer:     { name: 'Tiên Tri', icon: '🔮', color: '#c9a0ff', desc: 'Mỗi đêm kiểm tra danh tính một người.' },
+  guard:    { name: 'Bảo Vệ', icon: '🛡️', color: '#88ddaa', desc: 'Bảo vệ một người khỏi bị giết mỗi đêm.' },
+  witch:    { name: 'Phù Thủy', icon: '🧙', color: '#ffaa44', desc: 'Có 1 lá cứu và 1 lá giết, dùng 1 lần.' }
+};
+
+const GENDER_AVATARS = {
+  male:   ['👨', '🧔', '👨‍🦱', '👨‍🦰', '🧑'],
+  female: ['👩', '👩‍🦱', '👩‍🦰', '👩‍🦳', '🧕']
+};
+
+function getAvatar(name, gender) {
+  const g = gender || 'male';
+  const list = GENDER_AVATARS[g];
+  let hash = 0;
+  for (let c of (name || '?')) hash = (hash * 31 + c.charCodeAt(0)) & 0xfffff;
+  return list[hash % list.length];
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function toast(msg, type = '') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => t.style.opacity = '0', 2800);
+  setTimeout(() => t.remove(), 3100);
+}
+
+function addChat(containerId, sender, msg, cls = '') {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  const d = document.createElement('div');
+  d.className = `chat-msg ${cls}`;
+  if (sender) d.innerHTML = `<div class="chat-sender">${sender}</div>${escHtml(msg)}`;
+  else d.innerHTML = `<em>${escHtml(msg)}</em>`;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function setTimer(durationMs) {
+  clearInterval(timerInterval);
+  timerEnd = Date.now() + durationMs;
+  const bar = document.getElementById('timer-bar');
+  const disp = document.getElementById('timer-display');
+  timerInterval = setInterval(() => {
+    const left = Math.max(0, timerEnd - Date.now());
+    const pct = (left / durationMs) * 100;
+    if (bar) bar.style.width = pct + '%';
+    if (disp) {
+      const s = Math.ceil(left / 1000);
+      disp.textContent = s + 's';
+      disp.style.color = s <= 10 ? 'var(--blood-bright)' : 'var(--gold)';
+    }
+    if (left === 0) clearInterval(timerInterval);
+  }, 200);
+}
+
+// ─── WELCOME ─────────────────────────────────────────────────────────────────
+
+// Danh sách tên đã có trong phòng (cập nhật từ server qua lobby state)
+let lobbyPlayerNames = [];
+
+function checkNameRealtime(val) {
+  const warn = document.getElementById('name-dup-warn');
+  const txt  = document.getElementById('name-dup-text');
+  const inp  = document.getElementById('inp-name');
+  if (!val.trim()) { warn.style.display = 'none'; inp.style.borderColor = ''; return; }
+  // So sánh không phân biệt hoa thường
+  const dup = lobbyPlayerNames.find(n => n.toLowerCase() === val.trim().toLowerCase());
+  if (dup) {
+    txt.textContent = `Tên "${dup}" đã có người dùng trong phòng! Hãy chọn tên khác.`;
+    warn.style.display = 'block';
+    inp.style.borderColor = 'var(--blood-bright)';
+    inp.style.boxShadow   = '0 0 0 3px rgba(204,34,34,0.25)';
+  } else {
+    warn.style.display = 'none';
+    inp.style.borderColor = '';
+    inp.style.boxShadow   = '';
+  }
+}
+
+function selectGender(g) {
+  myGender = g;
+  document.getElementById('btn-male').classList.toggle('active', g === 'male');
+  document.getElementById('btn-female').classList.toggle('active', g === 'female');
+}
+function selectCount(n) {
+  selectedCount = n;
+  document.querySelectorAll('.count-btn').forEach((b, i) => {
+    b.classList.toggle('active', [6,7,8][i] === n);
+  });
+}
+
+// ─── WS CONNECTION ───────────────────────────────────────────────────────────
+function connectWS(onopen) {
+  if (ws) { ws.close(); ws = null; }
+  ws = new WebSocket(SERVER_URL);
+  ws.onopen = () => {
+    document.getElementById('conn-dot')?.classList.replace('red', 'green');
+    onopen();
+  };
+  ws.onerror = () => toast('❌ Không kết nối được server', 'blood');
+  ws.onclose = () => {
+    document.getElementById('conn-dot')?.classList.replace('green', 'red');
+    toast('🔌 Mất kết nối server', 'blood');
+  };
+  ws.onmessage = (e) => {
+    try { handleMessage(JSON.parse(e.data)); } catch(err) { console.error(err); }
+  };
+}
+
+function send(type, data = {}) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type, data }));
+  }
+}
+
+// ─── HELPER: hiện lỗi tên trùng tại ô input ────────────────────────────────
+function showNameError(msg) {
+  const inp  = document.getElementById('inp-name');
+  const warn = document.getElementById('name-dup-warn');
+  const txt  = document.getElementById('name-dup-text');
+  if (txt)  txt.textContent = msg;
+  if (warn) warn.style.display = 'block';
+  if (inp)  {
+    inp.style.borderColor = 'var(--blood-bright)';
+    inp.style.boxShadow   = '0 0 0 3px rgba(204,34,34,0.3)';
+    inp.focus(); inp.select();
+  }
+}
+function clearNameError() {
+  const inp  = document.getElementById('inp-name');
+  const warn = document.getElementById('name-dup-warn');
+  if (warn) warn.style.display = 'none';
+  if (inp)  { inp.style.borderColor = ''; inp.style.boxShadow = ''; }
+}
+
+// ─── ROOM ACTIONS ────────────────────────────────────────────────────────────
+// Biến lưu hành động pending sau khi check tên xong
+let _pendingAction = null;
+
+function createRoom() {
+  myName = document.getElementById('inp-name').value.trim();
+  if (!myName) return toast('Hãy nhập tên của bạn', 'blood');
+  clearNameError();
+
+  // Kết nối tạm để hỏi server check tên (phòng mới → không cần check tên trùng)
+  // Vì phòng chưa tồn tại nên tạo luôn
+  _pendingAction = { action: 'create_room' };
+  connectWS(() => {
+    send('create_room', { playerName: myName, gender: myGender, maxPlayers: selectedCount });
+  });
+}
+
+function joinRoom() {
+  myName = document.getElementById('inp-name').value.trim();
+  const rid = document.getElementById('inp-roomid').value.toUpperCase().trim();
+  if (!myName) return toast('Hãy nhập tên của bạn', 'blood');
+  if (!rid)    return toast('Hãy nhập mã phòng', 'blood');
+  clearNameError();
+
+  // Bước 1: kết nối WS và hỏi server check tên trước
+  _pendingAction = { action: 'join_room', roomId: rid };
+  connectWS(() => {
+    // Hỏi server: tên này có trùng trong phòng rid không?
+    send('check_name', { playerName: myName, roomId: rid });
+  });
+}
+
+function copyRoomId() {
+  if (!currentRoomId) return;
+  navigator.clipboard.writeText(currentRoomId).then(() => toast(`📋 Đã copy mã phòng: ${currentRoomId}`, 'gold'));
+}
+
+function startGame() {
+  send('start_game');
+}
+
+function backToWelcome() {
+  document.getElementById('result-screen').classList.remove('show');
+  if (ws) { ws.close(); ws = null; }
+  showScreen('screen-welcome');
+}
+
+// ─── LOBBY UI ────────────────────────────────────────────────────────────────
+function renderLobby(state) {
+  // Cập nhật danh sách tên để checkNameRealtime hoạt động chính xác
+  lobbyPlayerNames = state.players.map(p => p.name);
+  document.getElementById('lby-room-id').textContent = state.roomId;
+  document.getElementById('lby-count').textContent = `${state.players.length}/${state.maxPlayers}`;
+  
+  const grid = document.getElementById('lby-players');
+  grid.innerHTML = '';
+  
+  // Show filled slots
+  state.players.forEach(p => {
+    const div = document.createElement('div');
+    div.className = `player-slot filled${p.isMe ? ' me' : ''}`;
+    div.innerHTML = `
+      ${p.id === state.hostId ? '<span class="host-crown">👑</span>' : ''}
+      <div class="player-avatar">${getAvatar(p.name, p.gender)}</div>
+      <div class="player-slot-name">${escHtml(p.name)}${p.isMe ? ' (bạn)' : ''}</div>
+    `;
+    grid.appendChild(div);
+  });
+  
+  // Empty slots
+  const empty = state.maxPlayers - state.players.length;
+  for (let i = 0; i < empty; i++) {
+    const div = document.createElement('div');
+    div.className = 'player-slot empty';
+    div.innerHTML = '<div class="player-avatar">👤</div><div class="player-slot-name">Chờ người chơi...</div>';
+    grid.appendChild(div);
+  }
+
+  const startWrap = document.getElementById('start-btn-wrap');
+  const waitMsg = document.getElementById('waiting-msg');
+  if (isHost) {
+    startWrap.style.display = state.players.length >= 6 ? 'block' : 'none';
+    waitMsg.style.display = state.players.length >= 6 ? 'none' : 'block';
+    waitMsg.textContent = `⏳ Cần thêm ${6 - state.players.length} người nữa để bắt đầu...`;
+  }
+}
+
+function sendLobbyChat() {
+  const inp = document.getElementById('lby-chat-inp');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  send('chat', { message: msg });
+  inp.value = '';
+}
+
+function sendGameChat() {
+  const inp = document.getElementById('game-chat-inp');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  send('chat', { message: msg });
+  inp.value = '';
+}
+
+// ─── GAME UI ─────────────────────────────────────────────────────────────────
+function renderGameBoard(state) {
+  gameState = state;
+  const main = document.getElementById('game-main');
+  
+  // Phase header
+  const isNight = state.phase === 'night';
+  document.getElementById('phase-icon').textContent = isNight ? '🌙' : '☀️';
+  document.getElementById('phase-text').textContent = isNight ? 'Đêm' : 'Ngày';
+  document.getElementById('round-badge').textContent = `Vòng ${state.round}`;
+
+  // Players board
+  const boardHtml = `
+    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.2em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:14px">
+      Người Chơi (${state.players.filter(p=>p.alive).length} còn sống)
+    </div>
+    <div class="players-board" id="players-board">
+      ${state.players.map(p => renderPlayerCard(p)).join('')}
+    </div>
+  `;
+  main.innerHTML = boardHtml;
+}
+
+function renderPlayerCard(p) {
+  const ri = ROLE_INFO[p.role];
+  const isMe = p.id === myId;
+  // FIX: không tô wolf-ally cho chính mình
+  const isWolfAlly = !isMe && myRole === 'werewolf' && wolfTeammates.some(w => w.id === p.id);
+  let cls = `pcard ${p.alive ? 'alive' : 'dead'}${isMe ? ' me' : ''}${isWolfAlly ? ' wolf-ally' : ''}`;
+  return `
+    <div class="${cls}" id="pcard-${p.id}">
+      ${!p.alive ? '<div class="death-mark">💀</div>' : ''}
+      <div class="pcard-avatar">${getAvatar(p.name, p.gender)}</div>
+      <div class="pcard-name">${escHtml(p.name)}${isMe ? '<br><span style="color:var(--gold);font-size:9px">BẠN</span>' : ''}</div>
+      <div class="pcard-role">${ri ? ri.icon + ' ' + ri.name : (p.alive ? '' : '❓')}</div>
+    </div>
+  `;
+}
+
+function updateMyRoleCard() {
+  if (!myRole) return;
+  const ri = ROLE_INFO[myRole];
+  if (!ri) return;
+  const card = document.getElementById('my-role-card');
+  card.innerHTML = `
+    <div class="role-icon">${ri.icon}</div>
+    <div class="role-name" style="color:${ri.color}">${ri.name}</div>
+    <div class="role-desc">${ri.desc}</div>
+    ${myRole === 'werewolf' && wolfTeammates.length > 0 ? `
+      <div style="margin-top:8px;font-size:11px;color:var(--blood-bright);font-family:'Cinzel',serif">
+        Đồng bọn: ${wolfTeammates.map(w=>escHtml(w.name)).join(', ')}
+      </div>` : ''}
+    ${myRole === 'witch' ? `
+      <div style="margin-top:8px;font-size:11px;font-family:'Cinzel',serif;color:var(--text-dim)">
+        Cứu: ${witchPotions.save ? '✅' : '❌'} | Giết: ${witchPotions.kill ? '✅' : '❌'}
+      </div>` : ''}
+  `;
+}
+
+// ─── NIGHT ACTIONS ───────────────────────────────────────────────────────────
+function showNightAction(role, alivePlayers, nightKill) {
+  nightKillInfo = nightKill;
+  const main = document.getElementById('game-main');
+  const ri = ROLE_INFO[role];
+  
+  // Keep players board, add action panel
+  const existing = document.getElementById('action-panel-night');
+  if (existing) existing.remove();
+
+  const panel = document.createElement('div');
+  panel.className = 'action-panel';
+  panel.id = 'action-panel-night';
+
+  let content = '';
+
+  if (role === 'werewolf') {
+    content = `
+      <div class="night-role-label">🐺 MA SÓI THỨC DẬY</div>
+      <div class="action-title">Chọn nạn nhân để giết đêm nay</div>
+      <div class="action-targets" id="wolf-targets">
+        ${alivePlayers.map(p => `
+          <div class="target-btn" onclick="selectWolfTarget('${p.id}','${p.name}')" id="tgt-${p.id}">
+            <span class="target-emoji">${getAvatar(p.name, p.gender)}</span>
+            ${escHtml(p.name)}
+          </div>
+        `).join('')}
+      </div>
+      <button class="action-confirm-btn" onclick="confirmWolfKill()" style="background:linear-gradient(135deg,#8b1c1c,#5a0f0f)">
+        🐺 Xác Nhận Giết
+      </button>
+    `;
+  } else if (role === 'seer') {
+    content = `
+      <div class="night-role-label">🔮 TIÊN TRI THỨC DẬY</div>
+      <div class="action-title">Chọn người để xem có phải Ma Sói không</div>
+      <div class="action-targets" id="seer-targets">
+        ${alivePlayers.map(p => `
+          <div class="target-btn" onclick="doSeerCheck('${p.id}','${p.name}')" id="tgt-${p.id}">
+            <span class="target-emoji">${getAvatar(p.name, p.gender)}</span>
+            ${escHtml(p.name)}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else if (role === 'guard') {
+    content = `
+      <div class="night-role-label">🛡️ BẢO VỆ THỨC DẬY</div>
+      <div class="action-title">Chọn người để bảo vệ khỏi bị giết</div>
+      <div class="action-targets">
+        ${alivePlayers.concat([{id: myId, name: myName}]).map(p => `
+          <div class="target-btn" onclick="doGuard('${p.id}')" id="tgt-${p.id}">
+            <span class="target-emoji">${getAvatar(p.name, p.gender)}</span>
+            ${escHtml(p.name)}${p.id === myId ? ' (tôi)' : ''}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else if (role === 'witch') {
+    const killTarget = nightKill ? alivePlayers.find(p => p.id === nightKill) : null;
+    content = `
+      <div class="night-role-label">🧙 PHÙ THỦY THỨC DẬY</div>
+      <div class="action-title">Dùng phép thuật</div>
+      <div class="witch-options">
+        ${witchPotions.save && killTarget ? `
+          <button class="witch-opt-btn witch-save" onclick="doWitchSave('${killTarget.id}', '${killTarget.name}')">
+            ✨ Cứu ${escHtml(killTarget.name)} (bị Sói nhắm)
+          </button>` : (witchPotions.save ? '<div style="color:var(--text-dim);font-size:13px">✨ Chưa có ai bị nhắm đêm nay</div>' : '<div style="opacity:0.4;font-size:13px">Thuốc cứu đã dùng</div>')}
+        ${witchPotions.kill ? `
+          <div style="font-size:13px;color:var(--text-dim);margin-top:4px">Chọn người để giết:</div>
+          <div class="action-targets" style="margin-bottom:0">
+            ${alivePlayers.map(p => `
+              <div class="target-btn" onclick="doWitchKill('${p.id}','${p.name}')" id="wtgt-${p.id}">
+                <span class="target-emoji">${getAvatar(p.name, p.gender)}</span>
+                ${escHtml(p.name)}
+              </div>
+            `).join('')}
+          </div>
+        ` : '<div style="opacity:0.4;font-size:13px">Thuốc giết đã dùng</div>'}
+        <button class="witch-opt-btn witch-skip" onclick="doWitchSkip()">⏭ Bỏ qua đêm nay</button>
+      </div>
+    `;
+  }
+
+  panel.innerHTML = content;
+  main.appendChild(panel);
+  setTimer(33000);
+}
+
+let selectedWolfTarget = null;
+function selectWolfTarget(id, name) {
+  selectedWolfTarget = id;
+  document.querySelectorAll('#wolf-targets .target-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('tgt-' + id)?.classList.add('selected');
+}
+function confirmWolfKill() {
+  if (!selectedWolfTarget) return toast('Chọn nạn nhân trước', 'blood');
+  send('night_action', { target: selectedWolfTarget });
+  document.getElementById('action-panel-night')?.remove();
+  toast('🐺 Đã chọn xong', 'blood');
+}
+function doSeerCheck(id) {
+  send('night_action', { target: id });
+  document.getElementById('action-panel-night')?.remove();
+  toast('🔮 Đang kiểm tra...', 'system');
+}
+function doGuard(id) {
+  send('night_action', { guardTarget: id });
+  document.getElementById('action-panel-night')?.remove();
+  toast('🛡️ Đã bảo vệ', 'gold');
+}
+function doWitchSave(id, name) {
+  send('night_action', { save: true, saveTarget: id });
+  document.getElementById('action-panel-night')?.remove();
+  toast(`✨ Đã cứu ${name}`, 'gold');
+}
+function doWitchKill(id, name) {
+  send('night_action', { kill: true, killTarget: id });
+  document.getElementById('action-panel-night')?.remove();
+  toast(`💀 Đã dùng thuốc độc với ${name}`, 'blood');
+}
+function doWitchSkip() {
+  send('night_action', { skip: true });
+  document.getElementById('action-panel-night')?.remove();
+  toast('Phù thủy bỏ qua', '');
+}
+
+// ─── VOTING ──────────────────────────────────────────────────────────────────
+let myVote = null;
+function showVoting(alivePlayers) {
+  myVote = null;
+  const main = document.getElementById('game-main');
+  const existing = document.getElementById('vote-panel');
+  if (existing) existing.remove();
+  if (!myAlive) return;
+
+  const panel = document.createElement('div');
+  panel.className = 'action-panel';
+  panel.id = 'vote-panel';
+  panel.innerHTML = `
+    <div class="action-title">⚖️ Bỏ Phiếu Treo Cổ</div>
+    <div style="font-size:13px;color:var(--text-dim);text-align:center;margin-bottom:14px">Chọn người bạn nghi ngờ là Ma Sói</div>
+    <div class="action-targets" id="vote-targets">
+      ${alivePlayers.filter(p => p.id !== myId).map(p => `
+        <div class="target-btn selectable" onclick="castVote('${p.id}','${p.name}')" id="vtgt-${p.id}">
+          <span class="target-emoji">${getAvatar(p.name, p.gender)}</span>
+          ${escHtml(p.name)}
+          <span id="vc-${p.id}" style="font-size:10px;color:var(--blood-bright)"></span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  main.appendChild(panel);
+  setTimer(30000);
+}
+
+function castVote(id, name) {
+  if (myVote === id) return;
+  myVote = id;
+  document.querySelectorAll('#vote-targets .target-btn').forEach(b => b.classList.remove('selected-target'));
+  document.getElementById('vtgt-' + id)?.classList.add('selected-target');
+  send('vote', { targetId: id });
+  toast(`🗳️ Đã bỏ phiếu cho ${name}`, '');
+}
+
+// ─── MESSAGE HANDLER ─────────────────────────────────────────────────────────
+function handleMessage(msg) {
+  const { type, ...rest } = msg;
+
+  if (type === 'room_created') {
+    myId = rest.playerId;
+    currentRoomId = rest.roomId;
+    isHost = true;
+    showScreen('screen-lobby');
+    renderLobby({...rest.state, hostId: myId, maxPlayers: rest.state.maxPlayers});
+    addChat('lby-chat', null, `🏠 Phòng ${rest.roomId} đã tạo! Chia sẻ mã phòng cho bạn bè.`, 'system');
+  }
+
+  else if (type === 'joined_room') {
+    myId = rest.playerId;
+    currentRoomId = rest.roomId;
+    isHost = false;
+    showScreen('screen-lobby');
+    renderLobby({...rest.state, maxPlayers: rest.state.maxPlayers});
+    addChat('lby-chat', null, `🚪 Bạn đã vào phòng ${rest.roomId}`, 'system');
+  }
+
+  else if (type === 'player_joined') {
+    renderLobby({...rest.state, maxPlayers: rest.state.maxPlayers});
+    addChat('lby-chat', null, `👋 ${rest.name} đã tham gia`, 'system');
+    toast(`👋 ${rest.name} tham gia`, '');
+  }
+
+  else if (type === 'player_disconnected') {
+    toast(`🔌 ${rest.name} đã thoát`, 'blood');
+    addChat('lby-chat', null, `🔌 ${rest.name} đã thoát`, 'system');
+  }
+
+  else if (type === 'role_assigned') {
+    myRole = rest.role;
+    // FIX: lọc bỏ chính mình khỏi danh sách đồng bọn sói
+    if (rest.werewolfTeam) {
+      wolfTeammates = rest.werewolfTeam.filter(w => w.id !== myId);
+    }
+    updateMyRoleCard();
+    const ri = ROLE_INFO[myRole];
+    toast(`🎭 Bạn là ${ri?.name || myRole}!`, myRole === 'werewolf' ? 'blood' : 'gold');
+    if (myRole === 'werewolf' && wolfTeammates.length > 0) {
+      const names = wolfTeammates.map(w => escHtml(w.name)).join(', ');
+      setTimeout(() => toast(`🐺 Đồng bọn: ${names}`, 'blood'), 1800);
+    }
+  }
+
+  else if (type === 'game_started') {
+    gameState = rest.state;
+    showScreen('screen-game');
+    renderGameBoard(rest.state);
+    updateMyRoleCard();
+    addChat('game-chat', null, '⚔️ Trò chơi bắt đầu!', 'system');
+  }
+
+  else if (type === 'phase_change') {
+    const isNight = rest.phase === 'night';
+    document.getElementById('phase-icon').textContent = isNight ? '🌙' : '☀️';
+    document.getElementById('phase-text').textContent = isNight ? 'Đêm' : 'Ngày';
+    document.getElementById('round-badge').textContent = `Vòng ${rest.round}`;
+    if (rest.state) renderGameBoard(rest.state);
+
+    if (isNight) {
+      document.getElementById('night-overlay').classList.add('active');
+      setTimeout(() => document.getElementById('night-overlay').classList.remove('active'), 3000);
+    }
+    addChat('game-chat', null, isNight ? `🌙 Đêm ${rest.round} bắt đầu` : `☀️ Ngày ${rest.round} bắt đầu`, 'system');
+  }
+
+  else if (type === 'night_phase') {
+    const roleNames = { werewolf:'Ma Sói', seer:'Tiên Tri', guard:'Bảo Vệ', witch:'Phù Thủy' };
+    addChat('game-chat', null, `🌙 ${roleNames[rest.role] || rest.role} thức dậy...`, 'system');
+  }
+
+  else if (type === 'your_turn') {
+    myAlive = true;
+    showNightAction(rest.role, rest.alivePlayers, rest.nightKillTarget);
+    if (rest.witchPotions) witchPotions = rest.witchPotions;
+    if (rest.nightKillTarget) nightKillInfo = rest.nightKillTarget;
+    updateMyRoleCard();
+  }
+
+  else if (type === 'wolf_consensus') {
+    const { killedName, isConfirmed, isTie, voterName, votedCount, totalWolves } = rest;
+    if (isConfirmed) {
+      if (isTie) {
+        toast(`🐺 Vote hòa! Không ai bị cắn đêm nay (${votedCount}/${totalWolves})`, 'blood');
+        addChat('game-chat', null, `🐺 [Bầy Sói] ⚖️ Vote hòa — không ai chết đêm nay`, 'wolf');
+      } else {
+        toast(`🐺 Chốt mục tiêu: ${killedName}!`, 'blood');
+        addChat('game-chat', null, `🐺 [Bầy Sói] ✅ Đã chốt: ${killedName} (${votedCount}/${totalWolves} đồng ý)`, 'wolf');
+      }
+      document.getElementById('action-panel-night')?.remove();
+    } else {
+      toast(`🐺 ${voterName} vote: ${killedName} (${votedCount}/${totalWolves})`, 'blood');
+      addChat('game-chat', null, `🐺 [Bầy Sói] ${voterName} chọn ${killedName} — chờ (${votedCount}/${totalWolves})`, 'wolf');
+      document.querySelectorAll('#wolf-targets .target-btn').forEach(b => b.classList.remove('confirm-selected'));
+      if (rest.killedId) document.getElementById('tgt-' + rest.killedId)?.classList.add('confirm-selected');
+    }
+  }
+
+  else if (type === 'seer_result') {
+    const res = rest.isWerewolf ? '🐺 LÀ MA SÓI!' : '✅ Không phải Ma Sói';
+    toast(`🔮 ${rest.targetName}: ${res}`, rest.isWerewolf ? 'blood' : 'gold');
+    addChat('game-chat', null, `🔮 Kết quả: ${rest.targetName} ${res}`, rest.isWerewolf ? 'wolf' : 'system');
+  }
+
+  else if (type === 'guard_denied') {
+    toast('🛡️ ' + rest.reason, 'blood');
+  }
+
+  else if (type === 'night_results') {
+    document.getElementById('action-panel-night')?.remove();
+    const deaths = rest.deaths;
+    if (deaths.length === 0) {
+      toast('🌙 Đêm qua bình yên, không ai chết!', 'gold');
+      addChat('game-chat', null, '🌙 Đêm qua không có ai chết!', 'system');
+      showDeathOverlay([]);
+    } else {
+      showDeathOverlay(deaths);
+      deaths.forEach(d => {
+        addChat('game-chat', null, `💀 ${d.name} đã bị giết trong đêm`, 'system');
+        const card = document.getElementById('pcard-' + d.id);
+        if (card) {
+          card.classList.remove('alive'); card.classList.add('dead');
+          if (!card.querySelector('.death-mark')) {
+            const m = document.createElement('div');
+            m.className = 'death-mark'; m.textContent = '💀';
+            card.prepend(m);
+          }
+        }
+        if (d.id === myId) { myAlive = false; }
+      });
+    }
+  }
+
+  else if (type === 'discussion_start') {
+    document.getElementById('vote-panel')?.remove();
+    setTimer(rest.duration);
+    document.getElementById('bottom-hint').textContent = '💬 Thảo luận sôi nổi đi! Ai là Ma Sói?';
+    addChat('game-chat', null, '💬 Bắt đầu thảo luận! Thời gian có hạn...', 'system');
+  }
+
+  else if (type === 'voting_start') {
+    setTimer(rest.duration);
+    showVoting(rest.alivePlayers);
+    document.getElementById('bottom-hint').textContent = '🗳️ Bỏ phiếu để treo cổ nghi phạm!';
+    addChat('game-chat', null, '🗳️ Bỏ phiếu bắt đầu!', 'system');
+  }
+
+  else if (type === 'vote_update') {
+    const vc = document.getElementById('vc-' + rest.targetId);
+    if (vc) {
+      const cur = parseInt(vc.dataset.count || '0') + 1;
+      vc.dataset.count = cur;
+      vc.textContent = ` ${cur} phiếu`;
+      const card = document.getElementById('vtgt-' + rest.targetId);
+      if (card) {
+        let badge = card.querySelector('.vote-count');
+        if (!badge) { badge = document.createElement('span'); badge.className = 'vote-count'; card.appendChild(badge); }
+        badge.textContent = cur;
+      }
+    }
+    addChat('game-chat', null, `🗳️ ${rest.voterName} bỏ phiếu cho ${rest.targetName}`, 'system');
+  }
+
+  else if (type === 'no_execution') {
+    toast('⚖️ ' + rest.message, '');
+    addChat('game-chat', null, '⚖️ ' + rest.message, 'system');
+  }
+
+  else if (type === 'player_executed') {
+    document.getElementById('vote-panel')?.remove();
+    toast(`⚰️ ${rest.name} bị treo cổ! Họ là ${ROLE_INFO[rest.role]?.name || rest.role}`, 'blood');
+    addChat('game-chat', null, `⚰️ ${rest.name} bị treo cổ với ${rest.votes} phiếu! Vai: ${ROLE_INFO[rest.role]?.name || rest.role}`, 'blood');
+    const card = document.getElementById('pcard-' + rest.playerId);
+    if (card) {
+      card.classList.replace('alive', 'dead');
+      card.innerHTML += '<div class="death-mark">💀</div>';
+    }
+    if (rest.playerId === myId) myAlive = false;
+  }
+
+  else if (type === 'chat') {
+    const isWolf = rest.team === 'wolf';
+    const isDead = rest.team === 'dead';
+    const chatContainer = document.getElementById(
+      document.getElementById('screen-lobby').classList.contains('active') ? 'lby-chat' : 'game-chat'
+    );
+    addChat(chatContainer.id, rest.sender, rest.message, isWolf ? 'wolf' : isDead ? 'dead' : '');
+  }
+
+  else if (type === 'game_over') {
+    clearInterval(timerInterval);
+    showGameOver(rest);
+  }
+
+  else if (type === 'error') {
+    toast('❌ ' + rest.message, 'blood');
+    // Nếu lỗi tên trùng → highlight input tên và scroll lên
+    if (rest.message && rest.message.includes('đã có người dùng')) {
+      showNameError(rest.message);
+      if (ws) { ws.close(); ws = null; }
+      showScreen('screen-welcome');
+    }
+  }
+
+  else if (type === 'name_check_result') {
+    if (rest.available) {
+      // Tên OK → tiến hành join thật
+      if (_pendingAction && _pendingAction.action === 'join_room') {
+        send('join_room', { playerName: myName, gender: myGender, roomId: _pendingAction.roomId });
+      }
+    } else {
+      // Tên trùng → hiện lỗi, đóng WS tạm, quay màn hình welcome
+      showNameError(rest.message);
+      toast('❌ ' + rest.message, 'blood');
+      if (ws) { ws.close(); ws = null; }
+      showScreen('screen-welcome');
+    }
+    _pendingAction = null;
+  }
+
+  else if (type === 'pong') {}
+}
+
+// ─── DEATH OVERLAY ───────────────────────────────────────────────────────────
+function showDeathOverlay(deaths) {
+  const old = document.getElementById('death-overlay-temp');
+  if (old) old.remove();
+
+  const ov = document.createElement('div');
+  ov.id = 'death-overlay-temp';
+  ov.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:600;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    animation:toastIn 0.4s ease-out;cursor:pointer;padding:20px;
+  `;
+
+  if (deaths.length === 0) {
+    ov.innerHTML = `
+      <div style="font-size:68px;margin-bottom:14px">🌙</div>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(18px,5vw,26px);color:#d4af37;text-shadow:0 0 20px rgba(212,175,55,0.6);margin-bottom:8px;text-align:center">Đêm Bình Yên</div>
+      <div style="font-family:'Cinzel',serif;font-size:13px;color:#666;text-align:center">Không ai bị giết đêm qua</div>
+      <div style="font-size:11px;color:#444;margin-top:24px">Chạm để tiếp tục</div>`;
+  } else {
+    const iMeDead = deaths.some(d => d.id === myId);
+    const cards = deaths.map(d => {
+      const me = d.id === myId;
+      return `<div style="background:rgba(139,28,28,0.5);border:2px solid ${me?'#ff4444':'#8b1c1c'};
+              border-radius:14px;padding:16px 22px;text-align:center;min-width:110px;
+              box-shadow:0 0 20px rgba(204,34,34,${me?'0.8':'0.3'})">
+        <div style="font-size:40px">${me?'☠️':'💀'}</div>
+        <div style="font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:${me?'#ff8888':'#ffaaaa'};margin-top:8px">${escHtml(d.name)}</div>
+        <div style="font-size:11px;color:#cc4444;margin-top:4px">${me?'(BẠN)':''}đã bị giết</div>
+      </div>`;
+    }).join('');
+
+    ov.innerHTML = `
+      <div style="font-size:48px;margin-bottom:12px;filter:drop-shadow(0 0 16px rgba(204,34,34,0.9))">🌅</div>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(16px,5vw,22px);color:#cc2222;text-shadow:0 0 16px rgba(204,34,34,0.7);margin-bottom:22px;text-align:center">Bình Minh Ló Dạng...</div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:480px">${cards}</div>
+      ${iMeDead?`<div style="margin-top:18px;background:rgba(100,0,0,0.6);border:1px solid #ff4444;border-radius:10px;
+                  padding:12px 24px;font-family:'Cinzel',serif;font-size:14px;color:#ffcccc;text-align:center">
+                  👻 Bạn đã trở thành hồn ma. Tiếp tục theo dõi!</div>`:''}
+      <div style="font-size:11px;color:#444;margin-top:20px">Chạm để tiếp tục</div>`;
+  }
+
+  ov.onclick = () => { ov.style.opacity='0'; ov.style.transition='opacity 0.3s'; setTimeout(()=>ov.remove(),300); };
+  document.body.appendChild(ov);
+  setTimeout(() => { if (document.getElementById('death-overlay-temp')) ov.click(); }, 5000);
+}
+
+// ─── GAME OVER ───────────────────────────────────────────────────────────────
+function showGameOver(data) {
+  const rs = document.getElementById('result-screen');
+  const isWolfWin = data.winner === 'werewolf';
+  
+  document.getElementById('result-emoji').textContent = isWolfWin ? '🐺' : '🌅';
+  const titleEl = document.getElementById('result-title');
+  titleEl.textContent = isWolfWin ? 'Ma Sói Chiến Thắng!' : 'Làng Chiến Thắng!';
+  titleEl.className = `result-title ${isWolfWin ? 'wolf-win' : 'village-win'}`;
+  document.getElementById('result-info').textContent = `${data.rounds} vòng • ${Math.floor(data.duration/60)}:${String(data.duration%60).padStart(2,'0')} phút`;
+
+  const playersDiv = document.getElementById('result-players');
+  playersDiv.innerHTML = data.players.map(p => {
+    const ri = ROLE_INFO[p.role];
+    const isWinner = (data.winner === 'werewolf') === (p.role === 'werewolf');
+    return `
+      <div class="result-player ${isWinner ? 'winner' : ''}">
+        <div style="font-size:24px">${getAvatar(p.name, p.gender)}</div>
+        <div style="font-family:'Cinzel',serif;font-size:11px;font-weight:600;margin:4px 0">${escHtml(p.name)}</div>
+        <div style="font-size:18px">${ri?.icon || '❓'}</div>
+        <div style="font-size:10px;color:${isWinner ? 'var(--gold)' : 'var(--text-dim)'}">${ri?.name || p.role}</div>
+        ${!p.alive ? '<div style="font-size:10px;color:var(--blood-bright)">💀 Chết</div>' : ''}
+      </div>
+    `;
+  }).join('');
+
+  rs.classList.add('show');
+}
+
+// ─── KEYBOARD SHORTCUTS ──────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.activeElement === document.getElementById('inp-name') || 
+        document.activeElement === document.getElementById('inp-roomid')) {
+      // handled inline
+    }
+  }
+});
+
+// Ping to keep alive
+setInterval(() => { if (ws && ws.readyState === WebSocket.OPEN) send('ping'); }, 25000);
+
+// Init count selection
+selectCount(7);
+</script>
+</body>
+</html>

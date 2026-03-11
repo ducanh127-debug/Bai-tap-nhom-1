@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/client/">
+    <File Path="CLIENT_MASOI_HTML/client/index.html" />
+    <File Path="CLIENT_MASOI_HTML/electron/main.js" />
+  </Folder>
+  <Project Path="CLIENT_WEREWOLVE/CLIENT_WEREWOLVE.csproj" />
+  <Project Path="WEREWOLVE/WEREWOLVE.csproj" />
+</Solution>
